@@ -24,7 +24,7 @@ namespace driver {
 
 	}
 
-	//struct that communicate between kernel and user mode 
+
 	struct Request {
 		HANDLE process_id;
 
@@ -63,14 +63,13 @@ namespace driver {
 
 		auto request = reinterpret_cast<Request*>(irp->AssociatedIrp.SystemBuffer);
 
-		//daca rahatul asta da fail crapa sistemul de operare 
+		 
 		if (stack_irp == nullptr || request == nullptr) {
 			debug_print("[!] eroare la obtinerea stack-ului irp\n");
 			IoCompleteRequest(irp, IO_NO_INCREMENT);
 			return status;
 		}
 
-		//procesul de la care furam memorie 
 		static PEPROCESS target_process = nullptr;
 
 		const ULONG control_code = stack_irp->Parameters.DeviceIoControl.IoControlCode;
@@ -83,7 +82,7 @@ namespace driver {
 			);
 			break;
 		case codes::read:
-			//fun fact asta poaate cauza blue screen :D  bag pula 
+			
 			if (target_process == nullptr) {
 				status = MmCopyVirtualMemory(
 					target_process,
@@ -178,3 +177,4 @@ NTSTATUS DriverEntry() {
 	RtlInitUnicodeString(&driver_name, L"\\Driver\\testdriver");
 	return IoCreateDriver(&driver_name, &driver_main);
 }
+
