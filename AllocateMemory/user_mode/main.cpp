@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
-//capturam toate procesele din sistem de operare si vedem care e ala pe care il cautam noi cu while
+
 static DWORD GetProcessIdByName(const wchar_t* process_name) {
 	DWORD processId = 0;
 	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
@@ -34,7 +34,7 @@ static DWORD GetProcessIdByName(const wchar_t* process_name) {
 }
 
 
-//cu asta cautam modulele procesului la fel ca data trecut BTW modulele unui proces sunt dll uri,functi de runtime chiar si exe ul in sine practc poti cauta prin functiile lui
+
 static std::uintptr_t get_module_base(const DWORD pid, const wchar_t* module_name) {
 	std::uintptr_t module_base = 0;
 
@@ -63,7 +63,7 @@ static std::uintptr_t get_module_base(const DWORD pid, const wchar_t* module_nam
 	return module_base;
 }
 namespace driver {
-	//struct that communicate between kernel and user mode 
+
 	namespace codes {
 		constexpr ULONG atach = CTL_CODE(FILE_DEVICE_UNKNOWN, 0x696, METHOD_BUFFERED, FILE_SPECIAL_ACCESS);
 		constexpr ULONG allocate = CTL_CODE(FILE_DEVICE_UNKNOWN, 0x697, METHOD_BUFFERED, FILE_SPECIAL_ACCESS);
@@ -95,8 +95,8 @@ namespace driver {
 	}
 	bool allocate_memory(HANDLE driver_handle, const DWORD pid) {
 		Request request = {};
-		request.memory_size = 50000; // Set a reasonable size
-		request.protection = PAGE_READWRITE; // Set protection
+		request.memory_size = 50000;
+		request.protection = PAGE_READWRITE;
 		std::cout << "allcoalte memory called";
 		return DeviceIoControl(driver_handle,
 			codes::allocate,
@@ -155,4 +155,5 @@ int main() {
 	CloseHandle(driver);
 
 	return 0;
+
 }
