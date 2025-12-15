@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <TlHelp32.h>
 
-//capturam toate procesele din sistem de operare si vedem care e ala pe care il cautam noi cu while
 static DWORD GetProcessIdByName(const wchar_t* process_name) {
 	DWORD processId = 0;
 	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
@@ -34,7 +33,6 @@ static DWORD GetProcessIdByName(const wchar_t* process_name) {
 }
 
 
-//cu asta cautam modulele procesului la fel ca data trecut BTW modulele unui proces sunt dll uri,functi de runtime chiar si exe ul in sine practc poti cauta prin functiile lui
 static std::uintptr_t get_module_base(const DWORD pid, const wchar_t* module_name) {
 	std::uintptr_t module_base = 0;
 
@@ -75,7 +73,7 @@ namespace driver {
 
 	}
 
-	//struct that communicate between kernel and user mode 
+
 	struct Request {
 		HANDLE process_id;
 
@@ -180,3 +178,4 @@ int main() {
 
 	return 0;
 }
+
