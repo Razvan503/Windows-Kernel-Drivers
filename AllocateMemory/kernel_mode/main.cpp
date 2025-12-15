@@ -1,15 +1,12 @@
 #include <ntifs.h>
-/*trebuie pus extern C din cauza overloadingnului din c++,
-* kernelul e scris in c iar driverul asta in c++ ceea ce poate cauza
-* conflicte la function calls
-*/
+
 
 extern "C" {
 	NTKERNELAPI NTSTATUS IoCreateDriver(PUNICODE_STRING DiverName, PDRIVER_INITIALIZE InitializationFunction);
 	NTKERNELAPI NTSTATUS MmCopyVirtualMemory(PEPROCESS SourceProcess, PVOID SourceAdress,
 		PEPROCESS TargetProcess, PVOID TargetAddress, SIZE_T BufferSize, KPROCESSOR_MODE PreviousMode,
 		PSIZE_T ReturnSize);
-	NTKERNELAPI NTSTATUS ZwCreateThreadEx(__int64 threadhandle, __int64 desiredaccess, __int64 atributes, __int64 handle);
+	
 }
 
 
@@ -32,7 +29,7 @@ namespace driver {
 	};
 
 	NTSTATUS create(PDEVICE_OBJECT device_object, PIRP irp) {
-		UNREFERENCED_PARAMETER(device_object); //punem unreferened pentru a nu primi warninguri 
+		UNREFERENCED_PARAMETER(device_object); 
 
 		IoCompleteRequest(irp, IO_NO_INCREMENT);
 
@@ -40,7 +37,7 @@ namespace driver {
 	 }
 
 	NTSTATUS close(PDEVICE_OBJECT device_object, PIRP irp) {
-		UNREFERENCED_PARAMETER(device_object); //punem unreferened pentru a nu primi warninguri 
+		UNREFERENCED_PARAMETER(device_object);  
 		
 		IoCompleteRequest(irp, IO_NO_INCREMENT);
 
@@ -62,8 +59,7 @@ namespace driver {
 		KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL,
 			"Size pointer: 0x%p\n", size));
 
-		/*mutam threadul din kernel in usermode process si
-		si ii retinem apc state ul cu kestackattachprcess*/
+	
 		HANDLE process_handle = NULL;
 
 
@@ -111,7 +107,7 @@ namespace driver {
 		debug_print("after zwallocate\n");
 		KdPrintEx((DPFLTR_IHVDRIVER_ID, DPFLTR_INFO_LEVEL,
 			"  BaseAddress: 0x%p\n", local_base_adress));
-		//intoarcem threadul la apc state ul din kernel
+		
 
 
 		ZwCreateThreadEx(0, 0, 0, 0);
@@ -130,11 +126,11 @@ namespace driver {
 	}
 	NTSTATUS device_control(PDEVICE_OBJECT device_object, PIRP irp) {
 		debug_print("in device control");
-		UNREFERENCED_PARAMETER(device_object); //punem unreferened pentru a nu primi warninguri 
+		UNREFERENCED_PARAMETER(device_object); 
 
 		NTSTATUS status = STATUS_UNSUCCESSFUL;
 
-		//ia stackul irp ului care da call la driver pentru a da retrive la datele de la usermode 
+		
 		PIO_STACK_LOCATION stack_irp = IoGetCurrentIrpStackLocation(irp);
 		
 		auto request = reinterpret_cast<Request*>(irp->AssociatedIrp.SystemBuffer);
@@ -207,4 +203,5 @@ NTSTATUS DriverEntry() {
 	_UNICODE_STRING driver_name = {};
 	RtlInitUnicodeString(&driver_name, L"\\Driver\\testdriver");
 	return IoCreateDriver(&driver_name, &driver_main);
+
 }
