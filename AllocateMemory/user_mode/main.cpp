@@ -135,10 +135,10 @@ int main() {
 		return 1;
 	}
 	if (driver::attach_to_process(driver, pid) == true) {
-		std::cout << "atasat la seb" << std::endl;
+		std::cout << "process atached" << std::endl;
 	}
 	if (driver::allocate_memory(driver, pid) == true) {
-		std::cout << "Safe browser gasit" << std::endl;
+		std::cout << "found process" << std::endl;
 	}
 	else {
 		std::cout << "something wen wrong";
@@ -157,3 +157,4 @@ int main() {
 	return 0;
 
 }
+
