@@ -171,10 +171,11 @@ NTSTATUS driver_main(PDRIVER_OBJECT driver_object, PUNICODE_STRING registry_path
 }
 
 NTSTATUS DriverEntry() {
-	debug_print("[*] Dreptul la copiat este garantat de constitutie,Marcus Aurelius\n");
+	
 
 	UNICODE_STRING driver_name = {};
 	RtlInitUnicodeString(&driver_name, L"\\Driver\\testdriver");
 	return IoCreateDriver(&driver_name, &driver_main);
 }
+
 
